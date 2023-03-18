@@ -1,10 +1,15 @@
 package claseN1.VerifIngresos;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public class Main {
 
 
     public static void main(String... args){
-
+       
         VerifIngresos sujeto = new VerifIngresos()
         .setIngresMensualNeto(500000)
         .setMayorOIgual3autos(true)
