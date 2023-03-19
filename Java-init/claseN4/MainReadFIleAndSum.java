@@ -26,7 +26,7 @@ public class MainReadFIleAndSum {
             try {
                 while((linee=buffer.readLine())!=null){
                     String[] splitline= linee.trim().split(" ");
-                    Boolean isMultiplication= splitline[splitline.length-1]!=null&& splitline[splitline.length-1].equals("multiplicacion")?
+                    Boolean isMultiplication= args.length>1&& args[1].equals("multiplicacion")?
                     true:false;
                     int resultado=0;
                     
@@ -39,8 +39,8 @@ public class MainReadFIleAndSum {
                          """+ANSI_RESET);
                     }
                     
-                    int leng= isMultiplication?splitline.length-1:splitline.length;
-                    for(int i=0;i< leng;i++){
+                    
+                    for(int i=0;i< splitline.length;i++){
                         try{
                             if(isMultiplication){
                                 if(resultado==0){
