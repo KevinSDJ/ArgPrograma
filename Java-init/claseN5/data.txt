@@ -1,0 +1,5 @@
+Sku  Product-Name Description      Price    Stock
+
+123 | soap powder| 1 u 10x8cm     | 120.21 | 12
+193 | sponges    | 1 u            | 100.50 | 100
+124 | milk       | powder x500grs | 200.50 | 230
