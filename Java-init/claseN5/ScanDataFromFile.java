@@ -12,6 +12,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * esta clase parseara los datos en data.txt a 
+ * una coleccion de productos
+ * @validateMapData
+ * extrae y valida los datos del documento
+ * retornando una lista de Map
+ * @collectToProduct
+ * recolecta los datos retornado por validateMapData
+ * y lo castea a una coleccion de productos
+ * para finalmente retornarlo
+ * @parseFileDataProducts
+ * recibe la ruta del archivo y se lo pasa a validateMapData
+ * y retorna el valor final de collecToProduct
+*/
 public class ScanDataFromFile {
     private static String pathFile;
 
