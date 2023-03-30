@@ -44,13 +44,7 @@ public class ScanDataFromFile {
             Files.readAllLines(Paths.get(pathFile)).forEach(line->{
                 Map<String,String> map=new HashMap<>();
                 if(line.contains("|")){
-                    String[] lines=line.split("\\|");
-                    if(lines.length<att.length){
-                        throw new IllegalArgumentException("""
-                                los valores no pueden estar vacios, 
-                                y deben concidir con los valores del producto
-                                """);
-                    }
+
                     int i=0;
                     for(String word:line.split("\\|")){
                         map.put(att[i].getName(), word.trim());
@@ -70,12 +64,20 @@ public class ScanDataFromFile {
 
     private  static  Set<Product> collectToProduct(Collection<Map<String,String>> datamap){
         Field[] att= Product.class.getDeclaredFields();
-        Set<Product> products = datamap.stream().map(e-> new Product(
+        Set<Product> products = datamap.stream().map(e-> 
+        (Integer.valueOf(e.get("discount").replace("%", "").trim())<1)? new Product(
             Integer.parseInt(e.get(att[0].getName())),
             e.get(att[1].getName()),
             e.get(att[2].getName()),
             Double.parseDouble(e.get(att[3].getName())),
             Integer.parseInt(e.get(att[4].getName()))
+        ): new Product(
+            Integer.parseInt(e.get(att[0].getName())),
+            e.get(att[1].getName()),
+            e.get(att[2].getName()),
+            Double.parseDouble(e.get(att[3].getName())),
+            Integer.parseInt(e.get(att[4].getName())),
+            new Discount(e.get("discount"), Integer.valueOf(e.get("discount").replace("%", "").trim()))
         )).collect(Collectors.toSet());
         
         return products;

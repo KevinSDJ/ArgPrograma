@@ -18,7 +18,13 @@ public class Cart {
     public void setItems(Set<ItemCart> items) {
         this.items = items;
         this.items.forEach(e-> {
-            this.total+= (e.getProduct().getPrice()*e.getQuantity());
+            if(e.getProduct().getDiscount()!=null){
+                double descountTotal=(e.getProduct().getPrice()*e.getProduct().getDiscount().getValue())/100;
+                double price= e.getProduct().getPrice();
+                this.total+= (price-descountTotal)*e.getQuantity();
+            }else{
+                this.total+= (e.getProduct().getPrice()*e.getQuantity());
+            }
         });
     }
 

@@ -5,14 +5,13 @@ public class ItemCart {
 
     public ItemCart(){}
 
-    public ItemCart(int quantity,Product product){
-        if(quantity>product.getStock()){
+    public ItemCart(int q,Product p){
+        if(q>=p.getStock()){
             throw new IllegalArgumentException("limite de stock excedido");
         }
-        this.quantity=quantity;
-        this.quantity=quantity;
-        this.product=product;
-        product.setStock(product.getStock()-quantity);
+        this.quantity=q;
+        this.product=p;
+        product.setStock(p.getStock()-quantity);
     }
 
     public int getQuantity() {
@@ -27,9 +26,6 @@ public class ItemCart {
     }
 
     public Product getProduct() {
-        if(quantity>product.getStock()){
-            throw new IllegalArgumentException("limite de stock excedido");
-        }
         return product;
     }
 

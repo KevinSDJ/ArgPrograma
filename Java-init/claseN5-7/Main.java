@@ -16,7 +16,7 @@ public class Main {
     private static void simulateShoppingAndPrint(){
         Cart cart = new Cart();
         Set<ItemCart> items = new HashSet<>();
-        items.add(new ItemCart(20, fakeDatabase.get(0)));
+        items.add(new ItemCart(10, fakeDatabase.get(0)));
         items.add(new ItemCart(12, fakeDatabase.get(1)));
         cart.setItems(items);
         System.out.println("\n");

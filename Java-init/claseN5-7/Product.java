@@ -5,6 +5,7 @@ public class Product {
     private String description;
     private Double price;
     private int stock;
+    private Discount discount;
 
     public Product(){}
 
@@ -14,6 +15,15 @@ public class Product {
         this.description=description;
         this.price=price;
         this.stock=stock;
+    }
+
+    public Product(int sku,String product_name,String description,double price,int stock,Discount discount){
+        this.sku=sku;
+        this.productName=product_name;
+        this.description=description;
+        this.price= price;
+        this.stock=stock;
+        this.discount=discount;
     }
 
     public int getSku() {
@@ -56,11 +66,25 @@ public class Product {
         this.stock = stock;
     }
 
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Discount getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
+    
     @Override
     public String toString() {
         return "Product [sku=" + sku + ", productName=" + productName + ", description=" + description + ", price=" + price
-                + ", stock=" + stock + "]";
+                + ", stock=" + stock + ", discount="+discount +"]";
     }
-    
-    
 }
