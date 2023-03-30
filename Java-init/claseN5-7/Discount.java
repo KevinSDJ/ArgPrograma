@@ -2,8 +2,12 @@ public class Discount {
     
     private String desc;
     private int value;
+    private int MAX=60; 
 
     public Discount(String desc,int value){
+        if(value>MAX){
+            throw new IllegalArgumentException("maximo descuento excedido");
+        }
         this.desc=desc;
         this.value=value;
     }
@@ -17,6 +21,9 @@ public class Discount {
     }
 
     public int getValue() {
+        if(value>MAX){
+            throw new IllegalArgumentException("maximo descuento excedido");
+        }
         return value;
     }
 
