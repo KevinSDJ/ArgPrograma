@@ -13,7 +13,7 @@ public class Product {
         this.sku=sku;
         this.productName=product_name;
         this.description=description;
-        this.price=price;
+        setPrice(price);
         this.stock=stock;
     }
 
@@ -21,9 +21,9 @@ public class Product {
         this.sku=sku;
         this.productName=product_name;
         this.description=description;
-        this.price= price;
+        setPrice(price);
         this.stock=stock;
-        this.discount=discount;
+        setDiscount(discount);
     }
 
     public int getSku() {
@@ -51,10 +51,14 @@ public class Product {
     }
 
     public Double getPrice() {
+        
         return price;
     }
 
     public void setPrice(Double price) {
+        if(price<0){
+            throw new IllegalArgumentException("!price negative, not accept this value");
+        }
         this.price = price;
     }
 
@@ -79,6 +83,9 @@ public class Product {
     }
 
     public void setDiscount(Discount discount) {
+        if(this.price==0){
+            throw new IllegalArgumentException("can't add to price equals 0");
+        }
         this.discount = discount;
     }
     

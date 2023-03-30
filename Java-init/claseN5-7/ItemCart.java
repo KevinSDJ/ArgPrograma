@@ -7,7 +7,7 @@ public class ItemCart {
 
     public ItemCart(int q,Product p){
         if(q>=p.getStock()){
-            throw new IllegalArgumentException("limite de stock excedido");
+            throw new IllegalArgumentException("stock limit exceeded");
         }
         this.quantity=q;
         this.product=p;
