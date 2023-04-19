@@ -1,4 +1,4 @@
-package com.demo.app.adaptadores.db;
+package com.demo.app.adapters.db;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
