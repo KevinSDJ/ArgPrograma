@@ -1,6 +1,9 @@
 package com.demo.app.repository;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
 public abstract class ObjectReflecUtils<T> {
@@ -14,16 +17,19 @@ public abstract class ObjectReflecUtils<T> {
      */ 
 
     
-    String[] getFieldsDeclared(T object){
+    Field[] getFieldsDeclared(Object object){
 
-        String[] fields= Stream.of(object.getClass().getDeclaredFields())
-        .map(e->e.getName()).toArray(String[]::new);
-        return fields;
+        return  object.getClass().getDeclaredFields();
+    }
+
+    String[] getFieldsToArrayString(Object object){
+
+        return Stream.of(getFieldsDeclared(object)).map(e->e.getName()).toArray(String[]::new);
     }
 
     Object[] getValues(T object){
         Object[] values= Stream.of(getFieldsDeclared(object)).map(e->{
-            String method="get"+e.substring(0,1).toUpperCase()+e.substring(1);
+            String method="get"+e.getName().substring(0,1).toUpperCase()+e.getName().substring(1);
             try {
                 return object.getClass().getMethod(method).invoke(object);
             } catch (IllegalAccessException e1) {

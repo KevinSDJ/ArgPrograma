@@ -1,10 +1,15 @@
 package com.demo.app.entity;
 
+import com.demo.app.annotations.Id;
+import com.demo.app.annotations.OneToOne;
+
 public class Employee {
 
+    @Id
     private Long dni;
     private String first_name;
     private String last_name;
+    @OneToOne
     private Nationality nationality;
     private Department department;
 

@@ -1,7 +1,8 @@
 package com.demo.app.repository;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,8 +12,9 @@ import java.util.Collections;
 import java.util.List;
 import com.demo.app.adapters.db.DbConnection;
 import com.demo.app.adapters.outport.IRepository;
+import com.demo.app.annotations.OneToOne;
 
-public class EntityRepository<T, S> extends ObjectReflecUtils<T> implements IRepository<T, S> {
+public abstract class EntityRepository<T, S> extends ObjectReflecUtils<T> implements IRepository<T, S> {
 
     private DbConnection db = null;
 
@@ -30,7 +32,8 @@ public class EntityRepository<T, S> extends ObjectReflecUtils<T> implements IRep
             InvocationTargetException, SecurityException, NoSuchFieldException {
         if (db == null)
             return null;
-        String[] fields = getFieldsDeclared(entity);
+        String[] fields = getFieldsToArrayString(entity);
+        Object[] values = getValues(entity);
 
         StringBuilder sql = new StringBuilder();
         sql.append("INSERT INTO ")
@@ -41,7 +44,6 @@ public class EntityRepository<T, S> extends ObjectReflecUtils<T> implements IRep
 
         try (Connection conn = db.getConnection();
                 PreparedStatement stm = conn.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS)) {
-            Object[] values = getValues(entity);
             conn.setAutoCommit(false);
             for (int i = 0; i < values.length; i++) {
                 stm.setObject((i + 1), values[i]);
@@ -83,6 +85,22 @@ public class EntityRepository<T, S> extends ObjectReflecUtils<T> implements IRep
     public T findByName(String name) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    public void testAnotation(T object ){
+        Object[] values= getValues(object);
+        for(Object v:values){
+            System.out.println(v);
+        }
+        Field[] fields = object.getClass().getDeclaredFields();
+        for(Field field:fields){
+            Annotation annotation= field.getAnnotation(OneToOne.class);
+            if(annotation instanceof OneToOne){
+                System.out.println(field.getName());
+                System.out.println(field.getType());
+            }
+            
+        }
     }
 
 }
