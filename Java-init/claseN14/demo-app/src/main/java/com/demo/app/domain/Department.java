@@ -1,6 +1,11 @@
-package com.demo.app.entity;
+package com.demo.app.domain;
 
+import com.demo.app.annotations.Id;
+import com.demo.app.annotations.Table;
+
+@Table(name="department")
 public class Department {
+    @Id
     private Long id;
     private String name;
     private Long current_budget;

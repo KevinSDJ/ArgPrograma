@@ -12,12 +12,13 @@ create table if not exists nationality (
     ) engine= InnoDB;
 
 create table if not exists employee (
+    id bigint auto_increment unique not null,
     dni bigint unique not null,
     first_name varchar(46) not null,
     last_name varchar(46) not null,
     nationality_id bigint unique,
     department_id bigint unique,
-    primary key (dni),
+    primary key (id),
     foreign key (nationality_id) references nationality(id) on delete cascade,
     foreign key (department_id) references department(id) on delete cascade
     )engine =InnoDB;

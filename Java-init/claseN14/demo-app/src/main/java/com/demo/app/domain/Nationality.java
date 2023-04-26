@@ -1,7 +1,12 @@
-package com.demo.app.entity;
+package com.demo.app.domain;
 
+import com.demo.app.annotations.Id;
+import com.demo.app.annotations.Table;
+
+@Table(name = "nationality")
 public class Nationality {
 
+    @Id
     private Long id;
     private String name;
 

@@ -1,16 +1,20 @@
-package com.demo.app.entity;
+package com.demo.app.domain;
 
 import com.demo.app.annotations.Id;
 import com.demo.app.annotations.OneToOne;
+import com.demo.app.annotations.Table;
 
+@Table(name="employee")
 public class Employee {
 
     @Id
+    private Long id;
     private Long dni;
     private String first_name;
     private String last_name;
     @OneToOne
     private Nationality nationality;
+    @OneToOne
     private Department department;
 
     public Employee(){}
@@ -18,6 +22,12 @@ public class Employee {
         this.dni=dni;
         this.first_name=first_name;
         this.last_name=last_name;
+    }
+    public Long getId(){
+        return id;
+    }
+    public void setId(long id){
+        this.id=id;
     }
     public Long getDni() {
         return dni;
@@ -51,7 +61,7 @@ public class Employee {
     }
     @Override
     public String toString() {
-        return "Employee [department=" + department + ", dni=" + dni + ", first_name=" + first_name + ", last_name="
+        return "Employee [department=" + department +",id="+id+ ", dni=" + dni + ", first_name=" + first_name + ", last_name="
                 + last_name + ", nationality=" + nationality + "]";
     }
     
