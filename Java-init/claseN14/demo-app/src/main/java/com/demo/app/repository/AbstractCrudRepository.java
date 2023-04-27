@@ -133,7 +133,7 @@ public abstract class AbstractCrudRepository<T,S>  extends RepositoryUtils imple
         Field[] properties= clazz.getDeclaredFields();
         if(Stream.of(properties).anyMatch(e-> e.getName().equals("name"))){
 
-            String query = "SELECT TOP 1 FROM "
+            String query = "SELECT * FROM "
             +clazz.getAnnotation(Table.class).name()
             + " WHERE name = ?";
             try (Connection conn=database.connect();PreparedStatement stm=conn.prepareStatement(query)) {
@@ -141,9 +141,13 @@ public abstract class AbstractCrudRepository<T,S>  extends RepositoryUtils imple
                 Object object = clazz.getConstructor().newInstance();
                 ResultSet rs= stm.executeQuery();
                 if(rs.next()){
-                    System.out.println(rs.getMetaData().getColumnCount());
-                    System.out.println(object);
-                    return null;
+                    for(Field field:object.getClass().getDeclaredFields()){
+                        Class<?> type= field.getType();
+                        object.getClass()
+                        .getMethod(getSetMethod(field),type)
+                        .invoke(object, rs.getObject(field.getName()));
+                    }
+                    return (T) object;
                 }
             } catch (Exception e) {
                 Logger.getLogger(getClass().getSimpleName()).log(Level.WARNING, e.getMessage(),e);
