@@ -9,17 +9,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-
+import com.demo.app.annotations.OneToOne;
 import com.demo.app.annotations.Table;
 import com.demo.app.db.ConnectionFactory;
 import com.demo.app.db.databases.IDatabase;
-import com.mysql.cj.jdbc.exceptions.SQLError;
-import com.mysql.cj.x.protobuf.MysqlxCrud.Column;
 
 public abstract class AbstractCrudRepository<T,S>  extends RepositoryUtils implements IRepository<T,S>{
 
@@ -35,7 +34,7 @@ public abstract class AbstractCrudRepository<T,S>  extends RepositoryUtils imple
 
     @Override
     public T save(T entity) throws SQLException{
-        String tableName= getTableName(entity);
+        String tableName= getTableName(entity.getClass());
         Object tableId= getIdValue(entity);
         Object[] values= getValues(entity,null);
         String[] columns= getColumns(entity);
@@ -77,7 +76,6 @@ public abstract class AbstractCrudRepository<T,S>  extends RepositoryUtils imple
                 }
             }          
         }catch(SQLException error){
-            System.out.println(error.getClass());
             throw new SQLException(error);
         }
         return entity;
@@ -85,17 +83,45 @@ public abstract class AbstractCrudRepository<T,S>  extends RepositoryUtils imple
 
     @Override
     public List<T> findAll() {
-        return null;
+        List<T> list= new ArrayList<>();
+
+
+
+        return list;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T findById(S id,Class<?> entity) {
-
-        System.out.println("find by table :"+ entity.getSimpleName());
-        return null;
+        Object entityFound=null;
+        String sql= "select * from "+getTableName(entity)+" where id =?";
+        try(Connection conn= database.connect();PreparedStatement stm= conn.prepareStatement(sql)){
+            stm.setObject(1, (Object)id);
+            ResultSet rs= stm.executeQuery();
+            entityFound= entity.getConstructor().newInstance();
+            if(rs.next()){
+                for(Field field:entityFound.getClass().getDeclaredFields()){
+                    Class<?> type = field.getType();
+                    String column= field.getName();
+                    if(field.isAnnotationPresent(OneToOne.class)){
+                        column=column+"_id";
+                        entityFound.getClass().getMethod(getSetMethod(field),type)
+                        .invoke(entityFound,findById((S) rs.getObject(column),type));
+                    }else{
+                        entityFound.getClass().getMethod(getSetMethod(field),type)
+                        .invoke(entityFound, rs.getObject(column));
+                    }
+                }
+            }
+        
+        }catch(SQLException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex){
+            Logger.getLogger(getClass().getSimpleName()).log(Level.WARNING, ex.getMessage(),ex);
+        }
+        return (T) entityFound;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T findOrCreate(T entity) {
         Object id=getIdValue(entity);
         if(id==null){
@@ -125,10 +151,26 @@ public abstract class AbstractCrudRepository<T,S>  extends RepositoryUtils imple
 
     @Override
     public void delete(T entity) {
-        
+
+        String sql= "delete from "
+        + getTableName(entity.getClass())+" where ";
+        for(Field field:entity.getClass().getDeclaredFields()){
+            if(getFieldValue(field, entity)!=null){
+                sql+= field.getName()+"="+getFieldValue(field, entity);
+                break;
+            }
+        }
+        if(!sql.contains("null")||!sql.contains("Null")){
+            try(Connection conn= database.connect();Statement stm= conn.createStatement()){
+                stm.executeUpdate(sql);
+            }catch(SQLException ex){
+                Logger.getLogger(getClass().getSimpleName()).log(Level.WARNING, ex.getMessage(), ex);
+            }
+        }
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T findByName(String name,Class<?> clazz) {
         Field[] properties= clazz.getDeclaredFields();
         if(Stream.of(properties).anyMatch(e-> e.getName().equals("name"))){

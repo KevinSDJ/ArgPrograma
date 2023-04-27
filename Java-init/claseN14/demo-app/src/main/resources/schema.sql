@@ -19,6 +19,6 @@ create table if not exists employee (
     nationality_id bigint unique,
     department_id bigint unique,
     primary key (id),
-    foreign key (nationality_id) references nationality(id) on delete cascade,
-    foreign key (department_id) references department(id) on delete cascade
+    foreign key (nationality_id) references nationality(id) on delete set null on update cascade,
+    foreign key (department_id) references department(id) on delete set null on update cascade
     )engine =InnoDB;

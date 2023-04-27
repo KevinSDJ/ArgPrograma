@@ -54,13 +54,14 @@ public abstract class RepositoryUtils {
         return values;
     }
 
-    protected String getTableName(Object object){
-        if(object.getClass().isAnnotationPresent(Table.class)){
-            Table table= object.getClass().getAnnotation(Table.class);
+    protected String getTableName(Class<?> clazz){
+        if(clazz.isAnnotationPresent(Table.class)){
+            Table table= clazz.getAnnotation(Table.class);
             return table.name();
         }
         return null;
     } 
+    
     protected Object getIdValue(Object object){
         Field idField= getIdField(object);
         Object id=null;
@@ -71,6 +72,7 @@ public abstract class RepositoryUtils {
         }
         return id;
     }
+    
     protected Field getIdField(Object object){
         Field idField=null;
         for(Field field:object.getClass().getDeclaredFields()){
@@ -97,4 +99,20 @@ public abstract class RepositoryUtils {
         return method;
     }
 
+    protected Object getFieldValue(Field field ,Object o){
+        try {
+            Object value = o.getClass().getMethod(getGetMethod(field)).invoke(o);
+            return value;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
